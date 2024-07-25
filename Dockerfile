@@ -16,14 +16,19 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libsqlite3-dev \
     libsodium-dev \
+    libzip-dev \
+    unzip \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
-    && docker-php-ext-install bz2 curl fileinfo gd gettext mbstring exif mysqli pdo_mysql pdo_sqlite sodium
+    && docker-php-ext-install bz2 curl fileinfo gd gettext mbstring exif mysqli pdo_mysql pdo_sqlite sodium zip
 
 # Enable Apache modules if needed
 RUN a2enmod rewrite
 
 # Copy custom php.ini configuration
 COPY config/php.ini /usr/local/etc/php/
+
+# Get composer
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 # Set the working directory
 WORKDIR /var/www/html
